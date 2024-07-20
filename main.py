@@ -5,6 +5,8 @@ import sys
 import states
 import tournament
 import knockouts.knockout_match_data
+from teams import team_data
+import copy
 
 def main():
 
@@ -25,9 +27,61 @@ def main():
         semi_finals.simulate_round(tournament=new_tournament)
         finals.simulate_round(tournament=new_tournament)
 
-    new_tournament =  tournament.Tournament(states.GroupStageState(), knockouts.knockout_match_data.knockout_bracket)
-    new_tournament.simulate_tournament()
-    print("testing")
+        return new_tournament
+
+    team_results = {"group_stage": 0, "round_of_16": 0, "quarter_finals": 0, "semi_finals": 0, "runner-up":0, "winner": 0}
+
+    teams_d_ = team_data.teams_dict
+    country_tournament_results = {}
+    for team in teams_d_.keys():
+        country_tournament_results[team] = team_results.copy()
+    print("country tournament results")
+    print(country_tournament_results)
+
+    all_team_results = []
+    group_stage = states.GroupStageState()
+
+    original_knockout = copy.deepcopy(knockouts.knockout_match_data.knockout_bracket)
+
+    for i in range(0, 20):
+        print("country tournament results")
+        print(country_tournament_results)
+        
+        # knockout = knockouts.knockout_match_data.knockout_bracket
+        knockout = copy.deepcopy(original_knockout)
+
+        new_tournament =  tournament.Tournament(group_stage, knockouts.knockout_match_data.knockout_bracket)
+        _, _, teams = new_tournament.simulate_tournament()
+
+        # for team in teams.keys():
+        #     teams[team] = team_results
+
+        print("this team: ")
+        print(teams['England'].get_countryName())
+        print(teams['England'].exit_round)
+        print(teams['England'].points_earned)
+
+        print(teams['Serbia'].get_countryName())
+        print(teams['Serbia'].exit_round)
+        print(teams['Serbia'].points_earned)
+
+        print(teams['Denmark'].get_countryName())
+        print(teams['Denmark'].exit_round)
+        print(teams['Denmark'].points_earned)
+
+        print(teams['Slovenia'].get_countryName())
+        print(teams['Slovenia'].exit_round)
+        print(teams['Slovenia'].points_earned)
+
+        for country in country_tournament_results.keys():
+            exit_round_country = teams[country].exit_round
+            country_tournament_results[country][exit_round_country] += 1
+
+        print("testing")
+
+    for k in country_tournament_results.keys():
+        print(k)
+        print(country_tournament_results[k])
 
 # def main():
 #     print(sys.path)
