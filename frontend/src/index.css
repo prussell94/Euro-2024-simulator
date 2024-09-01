@@ -11,3 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.table-column {
+  background: linear-gradient(to bottom, #add8e6, #0000ff); /* Light blue to dark blue */
+}

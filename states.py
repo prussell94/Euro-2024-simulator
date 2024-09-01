@@ -6,6 +6,7 @@ import matches.match
 from knockouts.knockout_match_data import third_place_permutations
 from knockouts.knockout_match_data import r16_matches
 from knockouts.knockout_match_data import knockout_bracket, knockout_match
+import matches.simulator
 import teams
 import copy
 
@@ -14,10 +15,14 @@ import pandas as pd
 original_knockout = copy.deepcopy(knockout_bracket)
 
 class TournamentState:
+
+    euro_squads = pd.read_csv("matches/modified_euro_2024_squads_2.csv")
+    match_simulator = matches.simulator.Simulator(euro_squads)
+
     def simulate_round(self, tournament):
         raise NotImplementedError
     
-    def simulate_match_impl(team_a, team_b):
+    def simulate_match_impl(self, team_a, team_b):
         """
         In the case of round robin - need to allocate points 
         In the case of knockout - need to determine overtime, penalties
@@ -30,8 +35,10 @@ class TournamentState:
     
     def simulate_match(self, team_a, team_b, original_match):
 
-        # print("what is the current team inside simulate match?")
-        # print(team_b)
+        # euro_2024_squads = pd.read_csv("matches/modified_euro_2024_squads_2.csv")
+        # simulator_match = match_simulator(euro_2024_squads)
+        # team_a_goals_scored, team_b_goals_scored = self.match_simulator.simulate_match(team_a.get_countryName(), team_b.get_countryName())
+
         team_a_goals_scored = team_a.get_offensiveQualityDistribution().get_goal_estimate()[0]
         team_a_goals_conceded = team_a.get_defensiveQualityDistribution().get_goal_estimate()[0]
         team_b_goals_scored = team_b.get_offensiveQualityDistribution().get_goal_estimate()[0]
@@ -39,24 +46,27 @@ class TournamentState:
 
         team_a_goals_scored_avg = (team_a_goals_scored+team_b_goals_conceded)/2
         team_b_goals_scored_avg = (team_b_goals_scored+team_a_goals_conceded)/2
-    
-        # points_distribution = self.points_awarded(team_a_goals_scored_avg, team_b_goals_scored_avg)
-    
+        
         team_a_goals_scored = round(team_a_goals_scored_avg, 0)
         team_b_goals_scored = round(team_b_goals_scored_avg, 0)
 
-        team_a.set_goalsScored(team_a_goals_scored)
-        team_a.set_goalsConceded(team_b_goals_scored)
+        # print("team a goals scored with model ")
+        # print(team_a_goals_scored)
+        # team_a.set_goalsScored(team_a_goals_scored.item())
+        # team_a.set_goalsConceded(team_b_goals_scored.item())
 
-        team_b.set_goalsScored(team_b_goals_scored)
-        team_b.set_goalsConceded(team_a_goals_scored)
+        # team_b.set_goalsScored(team_b_goals_scored.item())
+        # team_b.set_goalsConceded(team_a_goals_scored.item())
 
+        # original_match.set_teamAGoalsScored(team_a_goals_scored.item())
+        # original_match.set_teamBGoalsScored(team_b_goals_scored.item())
+
+        print("original match")
+        print(original_match)
         current_match = copy.deepcopy(original_match)
 
         current_match.team_a_goals_scored = 0
         current_match.team_b_goals_scored = 0
-
-        # current_match = matches.match.Match(team_a, team_b, team_a_goals_scored=0, team_b_goals_scored=0)
 
         current_match.set_teamA(team_a)
         current_match.set_teamB(team_b)
@@ -69,7 +79,6 @@ class TournamentState:
         # print(match_complete.get_teamB())
         return match_complete
 
-    
 class GroupStageState(TournamentState):
     """
     A class representing the group stage state
@@ -216,7 +225,7 @@ class GroupStageState(TournamentState):
                 tournament.set_teams(all_teams)
                 next_round[next_round_match_id] = next_round_knockout_match
     
-    def simulate_match_impl(team_a, team_b, original_match):
+    def simulate_match_impl(self, team_a, team_b, original_match):
         
         points_distribution = matches.match.Match.points_awarded(team_a.get_goalsScored(), team_b.get_goalsScored())
 
@@ -373,14 +382,14 @@ class KnockoutState(TournamentState):
                 # print(current_round["51"].get_teamA())
                 # print("wins")
                 first_team.set_exit_round("winner")
-                second_team.set_exit_round('runner-up')
+                second_team.set_exit_round('runner_up')
                 current_round["51"].set_winner(current_round["51"].get_teamA())
     
             elif current_round["51"].get_teamAGoalsScored() < current_round["51"].get_teamBGoalsScored():
                 # print(current_round["51"].get_teamB())
                 # print("wins")
                 second_team.set_exit_round("winner")
-                first_team.set_exit_round('runner-up')
+                first_team.set_exit_round('runner_up')
                 current_round["51"].set_winner(current_round["51"].get_teamB())
             # else:
             #     print("checking blank score " + str(current_round["51"].get_teamBGoalsScored()))
@@ -621,6 +630,7 @@ class FinalsState(KnockoutState):
         print(tournament.get_knockout_bracket()['round_of_16']['37'].get_teamA().get_countryName())
 
         # Example logic: Determine winner and optionally transition to completed state
+        return tournament.get_knockout_bracket()
         tournament.transition_to(CompletedState())
 
 class CompletedState(TournamentState):

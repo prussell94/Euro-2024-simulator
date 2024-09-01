@@ -1,0 +1,89 @@
+.group-stage-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Adjust the gap between groups as needed */
+  }
+  
+  .group-container {
+    flex: 1 1 calc(33.333% - 20px); /* Three items per row, adjusting for gap */
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+ /* SimulationPage.css */
+
+/* Container for all rounds */
+.knockout-stage-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch; /* Ensure all rounds take equal height */
+  margin-top: 20px;
+}
+
+/* Each round takes equal height */
+.round {
+  display: grid;
+  align-items: center;
+  margin: 0 10px; /* Spacing between rounds */
+  min-height: 400px; /* Minimum height for each round */
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-sizing: border-box; 
+  background-color: #b86969;
+}
+
+/* Heading within each round */
+.round h3 {
+  margin-bottom: 20px; /* Space between heading and matches */
+  text-align: center;
+  width: 100%; /* Ensures heading takes full width of its container */
+  background: #fff; /* Optional: Background color to distinguish heading */
+}
+
+/* Container for matches within each round */
+.matches-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow-y: auto; /* Allows scrolling if content exceeds container height */
+  background-color: #00bcd4;
+}
+
+/* Individual match styling */
+.match {
+  width: 80%;
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  background-color: #00bcd4;
+
+}
+
+  
+  
+  /* .match:not(:last-child) {
+    margin-bottom: 20px;
+  } */
+  
+  /* .bracket-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  
+  .line {
+    stroke: #000;
+    stroke-width: 2;
+    fill: none;
+  } */
+  

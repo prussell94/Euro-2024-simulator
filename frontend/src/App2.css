@@ -1,0 +1,100 @@
+.App {
+    text-align: center;
+  }
+  
+  .App-logo {
+    height: 40vmin;
+    pointer-events: none;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+  
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .App-link {
+    color: #61dafb;
+  }
+  
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .table-column {
+    background: linear-gradient(to bottom, #add8e6, #0000ff); /* Light blue to dark blue */
+  }
+  
+  th:nth-child(1), td:nth-child(1) {
+    background: linear-gradient(to bottom, #e0f7fa, #00bcd4); /* Lighter blue */
+  }
+  th:nth-child(2), td:nth-child(2) {
+    background: linear-gradient(to bottom, #b3e5fc, #03a9f4); /* Darker blue */
+  }
+  
+  .table-column {
+    background: linear-gradient(to bottom, #add8e6, #0000ff); /* Light blue to dark blue */
+  }
+  
+  /* If applying gradient to every column, use this class on each td */
+  .table-column:nth-child(1) { /* Apply to the first column */
+    background: linear-gradient(to bottom, #e0f7fa, #00bcd4); /* Lighter blue */
+  }
+  
+  .table-column:nth-child(2) { /* Apply to the second column */
+    background: linear-gradient(to bottom, #b3e5fc, #03a9f4); /* Darker blue */
+  }
+  
+  nav {
+    background-color: #f0f0f0;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: bisque;
+    padding: 1rem;
+    border: 5px blueviolet
+  }
+  
+  nav ul li {
+    display: inline;
+    margin-right: 1rem;
+    padding: .9rem;
+    border-top: 2px solid blue;
+    border-right: 2px solid blue;
+    border-bottom: 2px solid blue;
+    border-left: 2px solid blue;
+  }
+
+  .group-stage-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Adjust the gap between groups as needed */
+  }
+  
+  .group-container {
+    flex: 1 1 calc(33.333% - 20px); /* Three items per row, adjusting for gap */
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #b86969;
+  }

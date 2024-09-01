@@ -14,7 +14,7 @@ class Team():
         list_of_games (list): list of games played by team
         exit_round (string): round team exits in (group_stage, round_of_16, quarter_finals, semi_finals, final, winner)
     """
-    def __init__(self, countryName, squad, offensive_quality_distribution, defensive_quality_distribution, points_earned=0, goals_scored=0, goals_conceded=0, group_placement=4, list_of_games=[], exit_round=""):
+    def __init__(self, countryName, squad, offensive_quality_distribution, defensive_quality_distribution, points_earned=0, goals_scored=0, goals_conceded=0, group_placement=4, list_of_games=[], exit_round="", quality_metrics=None):
         """
         Initialize a new team instance.
 
@@ -40,6 +40,7 @@ class Team():
         self._groupPlacement = group_placement
         self._games = list_of_games
         self._exitRound = exit_round
+        self.quality_metrics = quality_metrics if quality_metrics is not None else {}
 
     @property
     def countryName(self):
@@ -177,3 +178,9 @@ class Team():
 
     def accept(self, visitor):
         return visitor.visit_team(self)
+    
+    def set_quality_metrics(self, metrics_dict):
+        self.quality_metrics.update(metrics_dict)
+
+    def get_quality_metric(self, metric_name):
+        return self.quality_metrics.get(metric_name, None)

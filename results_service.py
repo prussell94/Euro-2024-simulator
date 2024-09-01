@@ -7,7 +7,8 @@ CORS(app)
 
 stored_results = {
     "group_stage": [],
-    "knockout_stage": {}
+    "knockout_stage": {},
+    "summary_statistics": {}
 }
 
 @app.route('/results', methods=['POST', 'GET'])
@@ -17,6 +18,7 @@ def process_results():
         if "results" in data:
             stored_results["group_stage"] = data["results"].get("group_stage", [])
             stored_results["knockout_stage"] = data["results"].get("knockout_stage", {})
+            stored_results["summary_statistics"] = data["results"].get("summary_statistics", {})
             print(data)
             return jsonify({"status": "success", "message": "Results processed successfully", "data": stored_results}), 200
         else:

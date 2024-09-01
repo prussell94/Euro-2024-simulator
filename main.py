@@ -7,6 +7,9 @@ import tournament
 import knockouts.knockout_match_data
 from teams import team_data
 import copy
+from matches.bayesian import BayesianNN
+
+
 
 def main():
 
@@ -35,43 +38,18 @@ def main():
     country_tournament_results = {}
     for team in teams_d_.keys():
         country_tournament_results[team] = team_results.copy()
-    print("country tournament results")
-    print(country_tournament_results)
 
-    all_team_results = []
     group_stage = states.GroupStageState()
 
-    original_knockout = copy.deepcopy(knockouts.knockout_match_data.knockout_bracket)
-
-    for i in range(0, 20):
+    for i in range(0, 1):
         print("country tournament results")
         print(country_tournament_results)
-        
-        # knockout = knockouts.knockout_match_data.knockout_bracket
-        knockout = copy.deepcopy(original_knockout)
 
         new_tournament =  tournament.Tournament(group_stage, knockouts.knockout_match_data.knockout_bracket)
         _, _, teams = new_tournament.simulate_tournament()
 
-        # for team in teams.keys():
-        #     teams[team] = team_results
-
-        print("this team: ")
-        print(teams['England'].get_countryName())
-        print(teams['England'].exit_round)
-        print(teams['England'].points_earned)
-
-        print(teams['Serbia'].get_countryName())
-        print(teams['Serbia'].exit_round)
-        print(teams['Serbia'].points_earned)
-
-        print(teams['Denmark'].get_countryName())
-        print(teams['Denmark'].exit_round)
-        print(teams['Denmark'].points_earned)
-
-        print(teams['Slovenia'].get_countryName())
-        print(teams['Slovenia'].exit_round)
-        print(teams['Slovenia'].points_earned)
+        print("tournament knockout bracket")
+        print(new_tournament._knockout_bracket)
 
         for country in country_tournament_results.keys():
             exit_round_country = teams[country].exit_round

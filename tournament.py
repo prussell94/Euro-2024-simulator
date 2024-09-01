@@ -69,6 +69,6 @@ class Tournament():
         round_of_16.simulate_round(tournament=new_tournament)
         quarter_finals.simulate_round(tournament=new_tournament)
         semi_finals.simulate_round(tournament=new_tournament)
-        finals.simulate_round(tournament=new_tournament)
+        knockout_bracket_final = finals.simulate_round(tournament=new_tournament)
 
-        return group_stage_results, self.get_knockout_bracket(), self.get_teams()
+        return group_stage_results, knockout_bracket_final, self.get_teams()
