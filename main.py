@@ -5,6 +5,11 @@ import sys
 import states
 import tournament
 import knockouts.knockout_match_data
+from teams import team_data
+import copy
+from matches.bayesian import BayesianNN
+
+
 
 def main():
 
@@ -25,9 +30,36 @@ def main():
         semi_finals.simulate_round(tournament=new_tournament)
         finals.simulate_round(tournament=new_tournament)
 
-    new_tournament =  tournament.Tournament(states.GroupStageState(), knockouts.knockout_match_data.knockout_bracket)
-    new_tournament.simulate_tournament()
-    print("testing")
+        return new_tournament
+
+    team_results = {"group_stage": 0, "round_of_16": 0, "quarter_finals": 0, "semi_finals": 0, "runner-up":0, "winner": 0}
+
+    teams_d_ = team_data.teams_dict
+    country_tournament_results = {}
+    for team in teams_d_.keys():
+        country_tournament_results[team] = team_results.copy()
+
+    group_stage = states.GroupStageState()
+
+    for i in range(0, 1):
+        print("country tournament results")
+        print(country_tournament_results)
+
+        new_tournament =  tournament.Tournament(group_stage, knockouts.knockout_match_data.knockout_bracket)
+        _, _, teams = new_tournament.simulate_tournament()
+
+        print("tournament knockout bracket")
+        print(new_tournament._knockout_bracket)
+
+        for country in country_tournament_results.keys():
+            exit_round_country = teams[country].exit_round
+            country_tournament_results[country][exit_round_country] += 1
+
+        print("testing")
+
+    for k in country_tournament_results.keys():
+        print(k)
+        print(country_tournament_results[k])
 
 # def main():
 #     print(sys.path)

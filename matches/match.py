@@ -1,3 +1,5 @@
+import pandas as pd
+
 class Match():
     """
     A class representing a soccer match
@@ -144,6 +146,53 @@ class Match():
             away_team_points = 3
         return home_team_points, away_team_points
     
+    def simulate_match_with_metrics(self, team_a, team_b):
+        """
+        Simulate match with metrics derived from aggregated FIFA ratings
+
+        Args:
+            team_a (Team): first team
+            team_b (Team): second team
+
+        Returns:
+            match (Match): The match object which includes teams and scoreline
+        """
+        """retrieve the quality metrics for each team, check that they are in the correct order and then
+        combine them for each team (need team and opposition metrics). Modify them into tensors so that
+        they can be inputted into the model and output the estimated number of goals. This means that
+        the whole averaging of goals scored/conceded does not occur. 
+        """
+
+        quality_columns = ['overall', 'potential', 'pace', 'shooting', 'passing', 'dribbling',
+            'defending', 'physic', 'attacking_crossing', 'attacking_finishing',
+            'attacking_heading_accuracy', 'attacking_short_passing',
+            'attacking_volleys', 'skill_dribbling', 'skill_curve',
+            'skill_fk_accuracy', 'skill_long_passing', 'skill_ball_control',
+            'movement_acceleration', 'movement_sprint_speed', 'movement_agility',
+            'movement_reactions', 'movement_balance', 'power_shot_power',
+            'power_jumping', 'power_stamina', 'power_strength', 'power_long_shots',
+            'mentality_aggression', 'mentality_interceptions',
+            'mentality_positioning', 'mentality_vision', 'mentality_penalties',
+            'mentality_composure', 'defending_marking_awareness',
+            'defending_standing_tackle', 'defending_sliding_tackle',
+            'goalkeeping_diving', 'goalkeeping_handling', 'goalkeeping_kicking',
+            'goalkeeping_positioning', 'goalkeeping_reflexes', 'goalkeeping_speed']
+        
+        player_count_df = euro_2024_squads.groupby("nationality_name")['player_id'].count()
+
+        agg_quality_df = euro_2024_squads.groupby(['nationality_name'])[quality_columns].mean()
+        
+        team_a_quality = team_a.quality_metrics
+        team_b_quality = team_b.quality_metrics
+
+        combined_df = pd.merge(agg_quality_df, player_count_df, left_on="nationality_name", right_on="nationality_name").rename(columns={"player_id": "player_count"})
+        
+        team_b = pd.concat([combined_df.iloc[2, :-1], combined_df.iloc[0, :-1], combined_df.iloc[2, -1:]])
+        team_a = pd.concat([combined_df.iloc[0, :-1], combined_df.iloc[2, :-1], combined_df.iloc[0, -1:]])
+        pd.concat([team_a_quality, team_b_quality], )
+
+
+    
     def simulateMatch(self, team_a, team_b):
         """
         Simulates match
@@ -167,6 +216,47 @@ class Match():
     
         team_a_goals_scored = round(team_a_goals_scored_avg, 0)
         team_b_goals_scored = round(team_b_goals_scored_avg, 0)
+
+        points_distribution = self.points_awarded(team_a_goals_scored, team_b_goals_scored)
+        team_a.set_goalsScored(team_a_goals_scored)
+        team_a.set_goalsConceded(team_b_goals_scored)
+        team_a.set_pointsEarned(points_distribution[0])
+
+        team_b.set_goalsScored(team_b_goals_scored)
+        team_b.set_goalsConceded(team_a_goals_scored)
+        team_b.set_pointsEarned(points_distribution[1])
+    
+        return Match(team_a, team_b, team_a_goals_scored, team_b_goals_scored)
+    
+    def simulateMatchWithModel(self, team_a, team_b):
+        """
+        Simulates match
+
+        Args:
+            team_a (Team): first team
+            team_b (Team): second team
+
+        Returns:
+            match (Match): The match object which includes teams and scoreline
+        """
+        
+        team_a_goals_scored, team_b_goals_scored = self.match_simulator.simulate_match(team_a.get_countryName(), team_b.get_countryName())
+
+        # team_a_goals_scored = team_a.get_offensiveQualityDistribution().get_goal_estimate()[0]
+        # team_a_goals_conceded = team_a.get_defensiveQualityDistribution().get_goal_estimate()[0]
+        # team_b_goals_scored = team_b.get_offensiveQualityDistribution().get_goal_estimate()[0]
+        # team_b_goals_conceded = team_b.get_defensiveQualityDistribution().get_goal_estimate()[0]
+
+        # team_a_goals_scored_avg = (team_a_goals_scored+team_b_goals_conceded)/2
+        # team_b_goals_scored_avg = (team_b_goals_scored+team_a_goals_conceded)/2
+    
+        # points_distribution = self.points_awarded(team_a_goals_scored_avg, team_b_goals_scored_avg)
+    
+        # team_a_goals_scored = round(team_a_goals_scored_avg, 0)
+        # team_b_goals_scored = round(team_b_goals_scored_avg, 0)
+
+        team_a_goals_scored = round(team_a_goals_scored, 0)
+        team_b_goals_scored = round(team_b_goals_scored, 0)
 
         points_distribution = self.points_awarded(team_a_goals_scored, team_b_goals_scored)
         team_a.set_goalsScored(team_a_goals_scored)

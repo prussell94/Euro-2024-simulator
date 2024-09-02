@@ -9,10 +9,14 @@ import knockouts
 import knockouts.knockout_stage
 import pandas as pd
 from serialization_visitor import ToDictVisitor
+from flask_cors import CORS
+from matches.bayesian import BayesianNN
+
 
 RESULTS_SERVICE_URL = "http://localhost:5002/results"
 
 app = Flask(__name__)
+CORS(app)
 
 new_tournament = tournament.Tournament(groups.group_stage, knockouts.knockout_match_data.knockout_bracket)
 
@@ -24,7 +28,7 @@ print(knockouts.knockout_match_data.knockout_bracket)
 @app.route('/simulate', methods=['POST'])
 def simulate():
 
-    group_stage_results, knockout_bracket = new_tournament.simulate_tournament()
+    group_stage_results, knockout_bracket, teams = new_tournament.simulate_tournament()
 
     print("tesitng")
     visitor = ToDictVisitor()
@@ -60,4 +64,4 @@ def send_results_to_results_service(group_stage_results, knockout_stage):
         return {"error": str(e)}
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5005)
+    app.run(debug=True, host='0.0.0.0', port=5006)
