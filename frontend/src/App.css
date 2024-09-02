@@ -36,3 +36,29 @@
     transform: rotate(360deg);
   }
 }
+
+/* If applying gradient to every column, use this class on each td */
+.table-column:nth-child(1) { /* Apply to the first column */
+  background: linear-gradient(to bottom, #e0f7fa, #00bcd4); /* Lighter blue */
+}
+
+.table-column:nth-child(2) { /* Apply to the second column */
+  background: linear-gradient(to bottom, #b3e5fc, #03a9f4); /* Darker blue */
+}
+
+nav {
+  background-color: #f0f0f0;
+  padding: 1rem;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 1rem;
+}
+
