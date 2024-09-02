@@ -39,10 +39,20 @@ class Simulator:
         index_value = combined_df.reset_index()[combined_df.reset_index().iloc[:, 0] == country_name].index[0]
 
     def create_team_data(self, combined_df, team_a_name, team_b_name):
+
+        if team_a_name == "Czechia":
+            team_a_name = "Czech Republic"
+        if team_b_name == "Czechia":
+            team_b_name = "Czech Republic"
+        # team_a['nationality_name'] = team_a['nationality_name'].replace('Czech Republic', 'Czechia')
+        # team_b['nationality_name'] = team_b['nationality_name'].replace('Czech Republic', 'Czechia')
+            
         team_a = combined_df[combined_df.reset_index()['nationality_name'] == team_a_name]
         team_b = combined_df[combined_df.reset_index()['nationality_name'] == team_b_name]
 
         print("why index error")
+        print(combined_df)
+        print(combined_df['nationality_name'].values)
         print(team_a_name)
         print(team_a)
         print(team_b_name)
@@ -85,6 +95,7 @@ class Simulator:
         return win_A / total, draw / total, win_B / total
 
     def simulate_match(self, team_a_name, team_b_name):
+
         agg_quality_df = self.aggregate_quality_metrics()
         player_count_df = self.count_players_per_nationality()
         combined_df = self.merge_quality_and_player_count(agg_quality_df, player_count_df)

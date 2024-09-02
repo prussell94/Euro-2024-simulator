@@ -1,10 +1,13 @@
 from teams.team import Team
 from matches.match import Match
 import itertools
+import matches.simulator
 
 import pandas as pd
 
 class Group():
+    euro_squads = pd.read_csv("matches/modified_euro_2024_squads_2.csv")
+    match_simulator = matches.simulator.Simulator(euro_squads)
     """
     A class representing a group
 
@@ -52,8 +55,13 @@ class Group():
             matches (list): list of match
         """
         matches = []
+        # euro_2024_squads = pd.read_csv("matches/modified_euro_2024_squads_2.csv")
+        # match_simulator = matches.simulator.Simulator(euro_squads)
+
         for i in range(0, sample):
-            matches.append(Match.simulateMatch(team_a, team_b))
+            # simulator_match = match_simulator(euro_2024_squads)
+            # team_a_goals_scored, team_b_goals_scored = self.match_simulator.simulate_match(team_a.get_countryName(), team_b.get_countryName())
+            matches.append(Match.simulateMatchWithModel(team_a, team_b))
         return matches
 
     def get_matchups(self, teams):

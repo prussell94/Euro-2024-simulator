@@ -227,3 +227,44 @@ class Match():
         team_b.set_pointsEarned(points_distribution[1])
     
         return Match(team_a, team_b, team_a_goals_scored, team_b_goals_scored)
+    
+    def simulateMatchWithModel(self, team_a, team_b):
+        """
+        Simulates match
+
+        Args:
+            team_a (Team): first team
+            team_b (Team): second team
+
+        Returns:
+            match (Match): The match object which includes teams and scoreline
+        """
+        
+        team_a_goals_scored, team_b_goals_scored = self.match_simulator.simulate_match(team_a.get_countryName(), team_b.get_countryName())
+
+        # team_a_goals_scored = team_a.get_offensiveQualityDistribution().get_goal_estimate()[0]
+        # team_a_goals_conceded = team_a.get_defensiveQualityDistribution().get_goal_estimate()[0]
+        # team_b_goals_scored = team_b.get_offensiveQualityDistribution().get_goal_estimate()[0]
+        # team_b_goals_conceded = team_b.get_defensiveQualityDistribution().get_goal_estimate()[0]
+
+        # team_a_goals_scored_avg = (team_a_goals_scored+team_b_goals_conceded)/2
+        # team_b_goals_scored_avg = (team_b_goals_scored+team_a_goals_conceded)/2
+    
+        # points_distribution = self.points_awarded(team_a_goals_scored_avg, team_b_goals_scored_avg)
+    
+        # team_a_goals_scored = round(team_a_goals_scored_avg, 0)
+        # team_b_goals_scored = round(team_b_goals_scored_avg, 0)
+
+        team_a_goals_scored = round(team_a_goals_scored, 0)
+        team_b_goals_scored = round(team_b_goals_scored, 0)
+
+        points_distribution = self.points_awarded(team_a_goals_scored, team_b_goals_scored)
+        team_a.set_goalsScored(team_a_goals_scored)
+        team_a.set_goalsConceded(team_b_goals_scored)
+        team_a.set_pointsEarned(points_distribution[0])
+
+        team_b.set_goalsScored(team_b_goals_scored)
+        team_b.set_goalsConceded(team_a_goals_scored)
+        team_b.set_pointsEarned(points_distribution[1])
+    
+        return Match(team_a, team_b, team_a_goals_scored, team_b_goals_scored)

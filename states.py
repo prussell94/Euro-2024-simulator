@@ -37,18 +37,20 @@ class TournamentState:
 
         # euro_2024_squads = pd.read_csv("matches/modified_euro_2024_squads_2.csv")
         # simulator_match = match_simulator(euro_2024_squads)
-        # team_a_goals_scored, team_b_goals_scored = self.match_simulator.simulate_match(team_a.get_countryName(), team_b.get_countryName())
+        team_a_goals_scored, team_b_goals_scored = self.match_simulator.simulate_match(team_a.get_countryName(), team_b.get_countryName())
 
-        team_a_goals_scored = team_a.get_offensiveQualityDistribution().get_goal_estimate()[0]
-        team_a_goals_conceded = team_a.get_defensiveQualityDistribution().get_goal_estimate()[0]
-        team_b_goals_scored = team_b.get_offensiveQualityDistribution().get_goal_estimate()[0]
-        team_b_goals_conceded = team_b.get_defensiveQualityDistribution().get_goal_estimate()[0]
+        team_a_goals_scored = round(team_a_goals_scored.item(), 0)
+        team_b_goals_scored = round(team_b_goals_scored.item(), 0)
+        # team_a_goals_scored = team_a.get_offensiveQualityDistribution().get_goal_estimate()[0]
+        # team_a_goals_conceded = team_a.get_defensiveQualityDistribution().get_goal_estimate()[0]
+        # team_b_goals_scored = team_b.get_offensiveQualityDistribution().get_goal_estimate()[0]
+        # team_b_goals_conceded = team_b.get_defensiveQualityDistribution().get_goal_estimate()[0]
 
-        team_a_goals_scored_avg = (team_a_goals_scored+team_b_goals_conceded)/2
-        team_b_goals_scored_avg = (team_b_goals_scored+team_a_goals_conceded)/2
+        # team_a_goals_scored_avg = (team_a_goals_scored+team_b_goals_conceded)/2
+        # team_b_goals_scored_avg = (team_b_goals_scored+team_a_goals_conceded)/2
         
-        team_a_goals_scored = round(team_a_goals_scored_avg, 0)
-        team_b_goals_scored = round(team_b_goals_scored_avg, 0)
+        # team_a_goals_scored = round(team_a_goals_scored_avg, 0)
+        # team_b_goals_scored = round(team_b_goals_scored_avg, 0)
 
         # print("team a goals scored with model ")
         # print(team_a_goals_scored)
