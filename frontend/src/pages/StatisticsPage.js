@@ -16,7 +16,7 @@ function StatisticsPage() {
         });
     }, []);
 
-    const totalSimulations = 1000;
+    const totalSimulations = 100;
 
     const sortedSummaryStatistics = Object.entries(results.summary_statistics).sort(
       ([teamNameA, statsA], [teamNameB, statsB]) => statsB.winner - statsA.winner

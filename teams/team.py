@@ -149,17 +149,17 @@ class Team():
 
     def set_goalsScored(self, goals):
         if goals < 0:
-            raise ValueError("Goals scored cannot be negative")
+            goals = 0
         self._goalsScored = self._goalsScored+goals
     
     def set_goalsConceded(self, goals):
         if goals < 0:
-            raise ValueError("Goals conceded cannot be negative")
+            goals = 0
         self._goalsConceded = self._goalsConceded+goals
 
     def set_pointsEarned(self, points):
         if points < 0:
-            raise ValueError("points earned cannot be negative")
+            points = 0
         self._pointsEarned = self._pointsEarned+points
         
     def set_groupPlacement(self, placement):

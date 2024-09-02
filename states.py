@@ -35,36 +35,11 @@ class TournamentState:
     
     def simulate_match(self, team_a, team_b, original_match):
 
-        # euro_2024_squads = pd.read_csv("matches/modified_euro_2024_squads_2.csv")
-        # simulator_match = match_simulator(euro_2024_squads)
         team_a_goals_scored, team_b_goals_scored = self.match_simulator.simulate_match(team_a.get_countryName(), team_b.get_countryName())
 
-        team_a_goals_scored = round(team_a_goals_scored.item(), 0)
-        team_b_goals_scored = round(team_b_goals_scored.item(), 0)
-        # team_a_goals_scored = team_a.get_offensiveQualityDistribution().get_goal_estimate()[0]
-        # team_a_goals_conceded = team_a.get_defensiveQualityDistribution().get_goal_estimate()[0]
-        # team_b_goals_scored = team_b.get_offensiveQualityDistribution().get_goal_estimate()[0]
-        # team_b_goals_conceded = team_b.get_defensiveQualityDistribution().get_goal_estimate()[0]
+        team_a_goals_scored = round(team_a_goals_scored, 0)
+        team_b_goals_scored = round(team_b_goals_scored, 0)
 
-        # team_a_goals_scored_avg = (team_a_goals_scored+team_b_goals_conceded)/2
-        # team_b_goals_scored_avg = (team_b_goals_scored+team_a_goals_conceded)/2
-        
-        # team_a_goals_scored = round(team_a_goals_scored_avg, 0)
-        # team_b_goals_scored = round(team_b_goals_scored_avg, 0)
-
-        # print("team a goals scored with model ")
-        # print(team_a_goals_scored)
-        # team_a.set_goalsScored(team_a_goals_scored.item())
-        # team_a.set_goalsConceded(team_b_goals_scored.item())
-
-        # team_b.set_goalsScored(team_b_goals_scored.item())
-        # team_b.set_goalsConceded(team_a_goals_scored.item())
-
-        # original_match.set_teamAGoalsScored(team_a_goals_scored.item())
-        # original_match.set_teamBGoalsScored(team_b_goals_scored.item())
-
-        print("original match")
-        print(original_match)
         current_match = copy.deepcopy(original_match)
 
         current_match.team_a_goals_scored = 0
@@ -77,8 +52,6 @@ class TournamentState:
 
         match_complete = self.simulate_match_impl(team_a, team_b, current_match)
 
-        # print("what is the match complete team B")
-        # print(match_complete.get_teamB())
         return match_complete
 
 class GroupStageState(TournamentState):
@@ -88,9 +61,6 @@ class GroupStageState(TournamentState):
     Attributes:
         groups (dict) : dictionary of groups 
     """
-    # def __init__(self, group_a=groups.groups_data.group_a, group_b=groups.groups_data.group_b,
-    #               group_c=groups.groups_data.group_c, group_d=groups.groups_data.group_d,
-    #                 group_e=groups.groups_data.group_e, group_f=groups.groups_data.group_f):
     def __init__(self, tournament="", groups={"A":groups.groups_data.group_a, "B":groups.groups_data.group_b, "C":groups.groups_data.group_c, 
                                "D":groups.groups_data.group_d, "E":groups.groups_data.group_e, "F":groups.groups_data.group_f}):
 
@@ -113,7 +83,6 @@ class GroupStageState(TournamentState):
         Returns:
             list of results for each group
         """
-        # group_a = groups_data.group_a
         results = []
         for group_key, group_value in self._groups.items():
             result = group_value.simulate_group()
@@ -121,57 +90,38 @@ class GroupStageState(TournamentState):
             result['GroupPlacement'] =result.apply(lambda row: self.assign_group_placement(row), axis=1)
             results.append(result)
 
-        # print("results")
-        # print(results)
         initial_r16_matches = self.generate_initial_knockout_round(results)
-        # print("initial round of 16 matches")
-        # print(initial_r16_matches)
 
-        # print(initial_r16_matches)
         knockout_round_bracket = self.mapGroupPlacementToTeam(initial_r16_matches, results, groups.groups_data.groups_dict)
 
         tournament.set_knockout_bracket(knockout_round_bracket)
 
-        # print("knockout_round_bracket testing")
-        # print(knockout_round_bracket)
         qualified_teams = []
         for match in knockout_round_bracket['round_of_16'].values():
-            # print(match)
-            # print(match.teamA.get_countryName())
             qualified_teams.append(match.teamA)
             qualified_teams.append(match.teamB)
         
         qualified_team_names = [team.countryName for team in qualified_teams]
 
-        # print("qualified team names")
-        # print(qualified_team_names)
         all_teams = list(teams.team_data.teams_dict.values())
 
         non_qualified_teams = [team for team in teams.team_data.teams_dict.values() if team.countryName not in qualified_team_names]
 
         [setattr(team, 'exit_round', 'group_stage') for team in teams.team_data.teams_dict.values() if team.countryName not in qualified_team_names]
 
-        # print("non qualified teams")
-        # print(len(non_qualified_teams))
-        # print(non_qualified_teams)
-
         print("Simulating Group Stage...")
-        # Example logic: Determine winners and transition to next state
 
-        # tournament.set_teams(all_teams)
         tournament.transition_to(RoundOf16State())
         
         return results
     
     def update_bracket(self, tournament, current_round_title, next_round_title):
-        # print("now before simulating group stage the bracket is")
-        # print(tournament.get_knockout_bracket())
+
         current_bracket = tournament.get_knockout_bracket()
         if isinstance(current_round_title, list):
             next_round = current_bracket[next_round_title]
             for index, match_id in enumerate(next_round.keys()):
                 knockout_game = next_round[match_id]
-                # next_round = current_bracket[next_round_title]
                 next_round_knockout_match = next_round[current_round_title[index].get_gameId()]
                 next_round_knockout_match.set_teamA()
                 next_round_knockout_match.set_teamB()
@@ -179,18 +129,13 @@ class GroupStageState(TournamentState):
         current_round = current_bracket[current_round_title]
         next_round = current_bracket[next_round_title]
 
-        # print("current round")
-        # print(current_round_title)
         if current_round_title == 'final':
 
             original_match = current_round["51"]
 
             current_match = self.simulate_match(first_team, second_team, original_match)
-            # print("finals match")
-            # print(current_match)
-            current_round[match_id] = current_match
 
-            print("now before simulating group stage the bracket is")
+            current_round[match_id] = current_match
 
             print("Tournament is complete")
 
@@ -206,8 +151,7 @@ class GroupStageState(TournamentState):
                 next_round_knockout_match = next_round[next_round_match_id]
 
                 all_teams = tournament.get_teams()
-                # print("current all teams")
-                # print(all_teams)
+
                 if first_team != current_round[match_id].get_winner():
                     first_team.set_exit_round(current_round_title)
                     all_teams[first_team.get_countryName()] = first_team
@@ -217,13 +161,10 @@ class GroupStageState(TournamentState):
                     all_teams[second_team.get_countryName()] = second_team
 
                 if next_round_knockout_match.get_teamA() != None :
-                    # // i need to set get_winner() to team object not a string!
-                    print("the winner is " + current_round[match_id].get_winner())
                     next_round_knockout_match.set_teamA(current_round[match_id].get_winner())
                 else:
                     next_round_knockout_match.set_teamB(current_round[match_id].get_winner())
 
-                print("setting new teams")
                 tournament.set_teams(all_teams)
                 next_round[next_round_match_id] = next_round_knockout_match
     
@@ -291,7 +232,6 @@ class GroupStageState(TournamentState):
     
         third_place_mappings = third_place_permutations[qualifying_third_place]
 
-        # print(third_place_mappings)
         for i in range(0, 8):
             for k in third_place_mappings.keys():
                 if r16_matches[i].get_gameId() == third_place_mappings[k]:
@@ -308,12 +248,8 @@ class GroupStageState(TournamentState):
     
     def mapGroupPlacementToTeam(self, r16_matches, group_stage, groups_dict):
 
-        # print(group_stage)
         group_tables=pd.concat(group_stage, ignore_index=True)
-        # print("r16 matches")
-        # print(r16_matches)
-        # print(knockout_bracket)
-        # new_knockout = copy.deepcopy(knockout_bracket)
+
         for matchIndex in self._knockout_bracket['round_of_16'].keys():
             
             match = self._knockout_bracket['round_of_16'][matchIndex]
@@ -321,9 +257,6 @@ class GroupStageState(TournamentState):
             groupPlacementA = match.get_groupPlacementA()
             groupPlacementB = match.get_groupPlacementB()
 
-            # print("group tables ---- ")
-            # print(group_tables)
-            # print(group_tables[group_tables['GroupPlacement'] == groupPlacementA])
             country_name_a = group_tables[group_tables['GroupPlacement'] == groupPlacementA]['Country'].iloc[0]
             group_of_country_a = group_tables[group_tables['GroupPlacement'] == groupPlacementA]['Group'].iloc[0]
             teams_a_of_group = groups_dict[str(group_of_country_a)]

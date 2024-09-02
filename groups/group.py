@@ -130,7 +130,7 @@ class Group():
         for mu in self.get_matchups(reset_group):
             teamA = mu[0]
             teamB = mu[1]
-            matchResult = Match.simulateMatch(self, teamA, teamB)
+            matchResult = Match.simulateMatchWithModel(self, teamA, teamB)
             matches.append(matchResult) 
         
         data = [{

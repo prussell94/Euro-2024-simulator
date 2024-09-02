@@ -3,6 +3,7 @@ import torch
 import pickle
 from scipy.stats import poisson
 from matches.bayesian import BayesianNN
+import numpy as np
 
 class Simulator:
     def __init__(self, euro_2024_squads):
@@ -35,8 +36,8 @@ class Simulator:
         combined_df = combined_df.rename(columns={"player_id": "player_count"})
         return combined_df
 
-    def retrieve_index(self, country_name, combined_df):
-        index_value = combined_df.reset_index()[combined_df.reset_index().iloc[:, 0] == country_name].index[0]
+    # def retrieve_index(self, country_name, combined_df):
+    #     index_value = combined_df.reset_index()[combined_df.reset_index().iloc[:, 0] == country_name].index[0]
 
     def create_team_data(self, combined_df, team_a_name, team_b_name):
 
@@ -99,10 +100,12 @@ class Simulator:
         agg_quality_df = self.aggregate_quality_metrics()
         player_count_df = self.count_players_per_nationality()
         combined_df = self.merge_quality_and_player_count(agg_quality_df, player_count_df)
-        # team_a_idx = self.retrieve_index(team_a_name, combined_df)
-        # team_b_idx = self.retrieve_index(team_b_name, combined_df)
+
         team_a, team_b = self.create_team_data(combined_df.reset_index(), team_a_name, team_b_name)
-        preds = self.make_predictions(team_a, team_b)
+        predictions = self.make_predictions(team_a, team_b)
+
+        xg_team1 = np.random.poisson(predictions[0].detach().numpy())  
+        xg_team2 = np.random.poisson(predictions[1].detach().numpy()) 
     
-        # Further processing or return the team data
+        preds = [xg_team1, xg_team2]
         return preds

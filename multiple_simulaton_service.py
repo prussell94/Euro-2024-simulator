@@ -39,7 +39,7 @@ def simulation_summary():
 
     group_stage = states.GroupStageState()
 
-    for i in range(0, 1000):
+    for i in range(0, 100):
         print("country tournament results")
         print(country_tournament_results)
 
